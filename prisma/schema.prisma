@@ -1,0 +1,65 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String     @id @default(uuid())
+  name         String
+  email        String     @unique
+  passwordHash String
+  role         String     @default("business")
+  createdAt    DateTime   @default(now())
+  businesses   Business[]
+
+  @@map("users")
+}
+
+model Business {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName   String
+  whatsappNumber String   @unique
+  category       String
+  city           String
+  address        String
+  isVerified     Boolean  @default(false)
+  isBanned       Boolean  @default(false)
+  trustScore     Int      @default(50)
+  profileViews   Int      @default(0)
+  createdAt      DateTime @default(now())
+  reviews        Review[]
+  reports        Report[]
+
+  @@map("businesses")
+}
+
+model Review {
+  id           String   @id @default(uuid())
+  businessId   String
+  business     Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  reviewerName String
+  rating       Int
+  comment      String   @db.Text
+  createdAt    DateTime @default(now())
+
+  @@map("reviews")
+}
+
+model Report {
+  id          String   @id @default(uuid())
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  reason      String
+  description String   @db.Text
+  status      String   @default("open")
+  createdAt   DateTime @default(now())
+
+  @@map("reports")
+}
