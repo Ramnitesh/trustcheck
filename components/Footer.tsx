@@ -1,3 +1,5 @@
+import { Shield, ShieldCheck } from "lucide-react";
+
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white mt-auto">
@@ -5,11 +7,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-2xl">🛡️</span>
+              <ShieldCheck size={32} className="text-blue-600" />
               <span className="text-xl font-bold">TrustCheck</span>
             </div>
             <p className="text-gray-400">
-              Your trusted platform for verifying WhatsApp businesses and protecting against scams.
+              Your trusted platform for verifying WhatsApp businesses and
+              protecting against scams.
             </p>
           </div>
 
@@ -17,17 +20,26 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <a href="/" className="text-gray-400 hover:text-white transition-colors">
+                <a
+                  href="/"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
                   Home
                 </a>
               </li>
               <li>
-                <a href="/dashboard" className="text-gray-400 hover:text-white transition-colors">
+                <a
+                  href="/dashboard"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
                   Dashboard
                 </a>
               </li>
               <li>
-                <a href="/auth/register" className="text-gray-400 hover:text-white transition-colors">
+                <a
+                  href="/auth/register"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
                   Register Business
                 </a>
               </li>
@@ -37,13 +49,18 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">About</h3>
             <p className="text-gray-400">
-              TrustCheck helps you verify WhatsApp business numbers, check trust scores, and avoid scams.
+              TrustCheck helps people verify WhatsApp business numbers, check
+              trust scores, and read real customer reviews before making
+              payments. It helps users avoid fraud, detect scams early, and make
+              safer decisions while chatting with unknown sellers.
             </p>
           </div>
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; {new Date().getFullYear()} TrustCheck. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} TrustCheck. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

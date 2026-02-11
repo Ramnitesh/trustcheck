@@ -1,16 +1,22 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { ShieldCheck } from "lucide-react";
+
+interface User {
+  role?: string;
+  [key: string]: unknown;
+}
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/auth/me')
+    fetch("/api/auth/me")
       .then((res) => res.json())
       .then((data) => {
         if (data.user) {
@@ -22,9 +28,9 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
+    await fetch("/api/auth/logout", { method: "POST" });
     setUser(null);
-    window.location.href = '/';
+    window.location.href = "/";
   };
 
   return (
@@ -32,7 +38,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl">🛡️</span>
+            <ShieldCheck size={45} className="text-blue-600" />
             <span className="text-2xl font-bold text-blue-600">TrustCheck</span>
           </Link>
 
@@ -44,20 +50,20 @@ export default function Navbar() {
                     <Link
                       href="/dashboard"
                       className={`px-4 py-2 rounded-lg transition-colors ${
-                        pathname === '/dashboard'
-                          ? 'bg-blue-600 text-white'
-                          : 'text-gray-700 hover:bg-gray-100'
+                        pathname === "/dashboard"
+                          ? "bg-blue-600 text-white"
+                          : "text-gray-700 hover:bg-gray-100"
                       }`}
                     >
                       Dashboard
                     </Link>
-                    {user.role === 'admin' && (
+                    {user.role === "admin" && (
                       <Link
                         href="/admin"
                         className={`px-4 py-2 rounded-lg transition-colors ${
-                          pathname === '/admin'
-                            ? 'bg-purple-600 text-white'
-                            : 'text-gray-700 hover:bg-gray-100'
+                          pathname === "/admin"
+                            ? "bg-purple-600 text-white"
+                            : "text-gray-700 hover:bg-gray-100"
                         }`}
                       >
                         Admin

@@ -1,3 +1,5 @@
+import { Star } from "lucide-react";
+
 interface Review {
   id: string;
   reviewerName: string;
@@ -15,14 +17,15 @@ export default function ReviewCard({ review }: ReviewCardProps) {
     return (
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
-          <span
+          <Star
             key={star}
-            className={`text-xl ${
-              star <= rating ? 'text-yellow-500' : 'text-gray-300'
+            size={18}
+            className={`${
+              star <= rating
+                ? "fill-yellow-400 text-yellow-400"
+                : "text-gray-300"
             }`}
-          >
-            ★
-          </span>
+          />
         ))}
       </div>
     );

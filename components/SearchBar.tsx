@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SearchBar() {
-  const [number, setNumber] = useState('');
-  const [error, setError] = useState('');
+  const [number, setNumber] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     // Validate number (10 digits)
-    const cleanNumber = number.replace(/\D/g, '');
-    
+    const cleanNumber = number.replace(/\D/g, "");
+
     if (cleanNumber.length !== 10) {
-      setError('Please enter a valid 10-digit WhatsApp number');
+      setError("Please enter a valid 10-digit WhatsApp number");
       return;
     }
 
@@ -32,7 +32,7 @@ export default function SearchBar() {
             value={number}
             onChange={(e) => setNumber(e.target.value)}
             placeholder="Enter WhatsApp number (10 digits)"
-            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg text-gray-900"
             maxLength={15}
           />
           <button
