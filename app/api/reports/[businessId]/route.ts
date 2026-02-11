@@ -1,33 +1,35 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+export const runtime = "edge";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ businessId: string }> }
+  { params }: { params: Promise<{ businessId: string }> },
 ) {
   try {
     const { businessId } = await params;
 
     if (!businessId) {
       return NextResponse.json(
-        { error: 'Business ID is required' },
-        { status: 400 }
+        { error: "Business ID is required" },
+        { status: 400 },
       );
     }
 
     const reports = await prisma.report.findMany({
       where: { businessId },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
 
     return NextResponse.json({
       reports,
     });
   } catch (error: any) {
-    console.error('Get reports error:', error);
+    console.error("Get reports error:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch reports' },
-      { status: 500 }
+      { error: "Failed to fetch reports" },
+      { status: 500 },
     );
   }
 }

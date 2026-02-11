@@ -1,16 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { getAuthUser } from '@/lib/auth';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { getAuthUser } from "@/lib/auth";
+
+export const runtime = "edge";
 
 export async function PATCH(request: NextRequest) {
   try {
     const user = await getAuthUser();
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'Not authenticated' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
     const body = await request.json();
@@ -23,8 +22,8 @@ export async function PATCH(request: NextRequest) {
 
     if (!business) {
       return NextResponse.json(
-        { error: 'Business not found' },
-        { status: 404 }
+        { error: "Business not found" },
+        { status: 404 },
       );
     }
 
@@ -44,10 +43,10 @@ export async function PATCH(request: NextRequest) {
       business: updatedBusiness,
     });
   } catch (error: any) {
-    console.error('Update business error:', error);
+    console.error("Update business error:", error);
     return NextResponse.json(
-      { error: 'Failed to update business' },
-      { status: 500 }
+      { error: "Failed to update business" },
+      { status: 500 },
     );
   }
 }

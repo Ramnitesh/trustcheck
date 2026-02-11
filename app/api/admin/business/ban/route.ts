@@ -1,26 +1,25 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { getAuthUser } from '@/lib/auth';
-import { calculateTrustScore } from '@/lib/trustScore';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { getAuthUser } from "@/lib/auth";
+
+export const runtime = "edge";
+import { calculateTrustScore } from "@/lib/trustScore";
 
 export async function PATCH(request: NextRequest) {
   try {
     const user = await getAuthUser();
 
-    if (!user || user.role !== 'admin') {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 403 }
-      );
+    if (!user || user.role !== "admin") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
     const body = await request.json();
     const { businessId, isBanned } = body;
 
-    if (!businessId || typeof isBanned !== 'boolean') {
+    if (!businessId || typeof isBanned !== "boolean") {
       return NextResponse.json(
-        { error: 'Business ID and ban status are required' },
-        { status: 400 }
+        { error: "Business ID and ban status are required" },
+        { status: 400 },
       );
     }
 
@@ -38,10 +37,10 @@ export async function PATCH(request: NextRequest) {
       business,
     });
   } catch (error: any) {
-    console.error('Ban business error:', error);
+    console.error("Ban business error:", error);
     return NextResponse.json(
-      { error: 'Failed to update ban status' },
-      { status: 500 }
+      { error: "Failed to update ban status" },
+      { status: 500 },
     );
   }
 }

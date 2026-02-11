@@ -1,7 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
-import { prisma } from '@/lib/prisma';
-import { signToken, setAuthCookie } from '@/lib/auth';
+import { NextRequest, NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
+import { prisma } from "@/lib/prisma";
+import { signToken, setAuthCookie } from "@/lib/auth";
+
+export const runtime = "edge";
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,15 +13,15 @@ export async function POST(request: NextRequest) {
     // Validate input
     if (!name || !email || !password) {
       return NextResponse.json(
-        { error: 'All fields are required' },
-        { status: 400 }
+        { error: "All fields are required" },
+        { status: 400 },
       );
     }
 
     if (password.length < 6) {
       return NextResponse.json(
-        { error: 'Password must be at least 6 characters' },
-        { status: 400 }
+        { error: "Password must be at least 6 characters" },
+        { status: 400 },
       );
     }
 
@@ -30,8 +32,8 @@ export async function POST(request: NextRequest) {
 
     if (existingUser) {
       return NextResponse.json(
-        { error: 'Email already registered' },
-        { status: 400 }
+        { error: "Email already registered" },
+        { status: 400 },
       );
     }
 
@@ -44,7 +46,7 @@ export async function POST(request: NextRequest) {
         name,
         email,
         passwordHash,
-        role: 'business',
+        role: "business",
       },
     });
 
@@ -68,10 +70,10 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error: any) {
-    console.error('Registration error:', error);
+    console.error("Registration error:", error);
     return NextResponse.json(
-      { error: 'Failed to register user' },
-      { status: 500 }
+      { error: "Failed to register user" },
+      { status: 500 },
     );
   }
 }

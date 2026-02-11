@@ -1,6 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { calculateTrustScore } from '@/lib/trustScore';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { calculateTrustScore } from "@/lib/trustScore";
+
+export const runtime = "edge";
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,16 +12,16 @@ export async function POST(request: NextRequest) {
     // Validate input
     if (!businessId || !reviewerName || !rating || !comment) {
       return NextResponse.json(
-        { error: 'All fields are required' },
-        { status: 400 }
+        { error: "All fields are required" },
+        { status: 400 },
       );
     }
 
     // Validate rating
     if (rating < 1 || rating > 5) {
       return NextResponse.json(
-        { error: 'Rating must be between 1 and 5' },
-        { status: 400 }
+        { error: "Rating must be between 1 and 5" },
+        { status: 400 },
       );
     }
 
@@ -30,8 +32,8 @@ export async function POST(request: NextRequest) {
 
     if (!business) {
       return NextResponse.json(
-        { error: 'Business not found' },
-        { status: 404 }
+        { error: "Business not found" },
+        { status: 404 },
       );
     }
 
@@ -53,10 +55,10 @@ export async function POST(request: NextRequest) {
       review,
     });
   } catch (error: any) {
-    console.error('Add review error:', error);
+    console.error("Add review error:", error);
     return NextResponse.json(
-      { error: 'Failed to add review' },
-      { status: 500 }
+      { error: "Failed to add review" },
+      { status: 500 },
     );
   }
 }

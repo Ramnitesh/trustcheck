@@ -1,17 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+export const runtime = "edge";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ number: string }> }
+  { params }: { params: Promise<{ number: string }> },
 ) {
   try {
     const { number } = await params;
 
     if (!number) {
       return NextResponse.json(
-        { error: 'Number is required' },
-        { status: 400 }
+        { error: "Number is required" },
+        { status: 400 },
       );
     }
 
@@ -20,11 +22,11 @@ export async function GET(
       where: { whatsappNumber: number },
       include: {
         reviews: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: "desc" },
         },
         reports: {
-          where: { status: 'open' },
-          orderBy: { createdAt: 'desc' },
+          where: { status: "open" },
+          orderBy: { createdAt: "desc" },
           take: 3,
         },
       },
@@ -32,8 +34,8 @@ export async function GET(
 
     if (!business) {
       return NextResponse.json(
-        { error: 'Business not found' },
-        { status: 404 }
+        { error: "Business not found" },
+        { status: 404 },
       );
     }
 
@@ -58,10 +60,10 @@ export async function GET(
       },
     });
   } catch (error: any) {
-    console.error('Get business error:', error);
+    console.error("Get business error:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch business' },
-      { status: 500 }
+      { error: "Failed to fetch business" },
+      { status: 500 },
     );
   }
 }

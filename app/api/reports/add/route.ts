@@ -1,6 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { calculateTrustScore } from '@/lib/trustScore';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { calculateTrustScore } from "@/lib/trustScore";
+
+export const runtime = "edge";
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,8 +12,8 @@ export async function POST(request: NextRequest) {
     // Validate input
     if (!businessId || !reason || !description) {
       return NextResponse.json(
-        { error: 'All fields are required' },
-        { status: 400 }
+        { error: "All fields are required" },
+        { status: 400 },
       );
     }
 
@@ -22,8 +24,8 @@ export async function POST(request: NextRequest) {
 
     if (!business) {
       return NextResponse.json(
-        { error: 'Business not found' },
-        { status: 404 }
+        { error: "Business not found" },
+        { status: 404 },
       );
     }
 
@@ -33,7 +35,7 @@ export async function POST(request: NextRequest) {
         businessId,
         reason,
         description,
-        status: 'open',
+        status: "open",
       },
     });
 
@@ -45,10 +47,10 @@ export async function POST(request: NextRequest) {
       report,
     });
   } catch (error: any) {
-    console.error('Add report error:', error);
+    console.error("Add report error:", error);
     return NextResponse.json(
-      { error: 'Failed to add report' },
-      { status: 500 }
+      { error: "Failed to add report" },
+      { status: 500 },
     );
   }
 }

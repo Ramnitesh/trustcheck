@@ -1,7 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
-import { prisma } from '@/lib/prisma';
-import { signToken, setAuthCookie } from '@/lib/auth';
+import { NextRequest, NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
+import { prisma } from "@/lib/prisma";
+import { signToken, setAuthCookie } from "@/lib/auth";
+
+export const runtime = "edge";
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,8 +13,8 @@ export async function POST(request: NextRequest) {
     // Validate input
     if (!email || !password) {
       return NextResponse.json(
-        { error: 'Email and password are required' },
-        { status: 400 }
+        { error: "Email and password are required" },
+        { status: 400 },
       );
     }
 
@@ -23,8 +25,8 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json(
-        { error: 'Invalid email or password' },
-        { status: 401 }
+        { error: "Invalid email or password" },
+        { status: 401 },
       );
     }
 
@@ -33,8 +35,8 @@ export async function POST(request: NextRequest) {
 
     if (!isValidPassword) {
       return NextResponse.json(
-        { error: 'Invalid email or password' },
-        { status: 401 }
+        { error: "Invalid email or password" },
+        { status: 401 },
       );
     }
 
@@ -58,10 +60,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error: any) {
-    console.error('Login error:', error);
-    return NextResponse.json(
-      { error: 'Failed to login' },
-      { status: 500 }
-    );
+    console.error("Login error:", error);
+    return NextResponse.json({ error: "Failed to login" }, { status: 500 });
   }
 }
