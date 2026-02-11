@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TrustBadge from "@/components/TrustBadge";
+import AlertModal, { AlertType } from "@/components/AlertModal";
 import ReviewCard from "@/components/ReviewCard";
+import { Eye, Star, AlertTriangle, Copy } from "lucide-react";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -23,6 +25,11 @@ export default function DashboardPage() {
   const [address, setAddress] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [alert, setAlert] = useState<{
+    type: "success" | "error" | "warning" | "info";
+    title: string;
+    message: string;
+  } | null>(null);
 
   useEffect(() => {
     checkAuth();
@@ -133,7 +140,11 @@ export default function DashboardPage() {
     if (business) {
       const link = `${window.location.origin}/b/${business.whatsappNumber}`;
       navigator.clipboard.writeText(link);
-      alert("Profile link copied to clipboard!");
+      setAlert({
+        type: "success",
+        title: "Success",
+        message: "Profile link copied to clipboard!",
+      });
     }
   };
 
@@ -152,6 +163,14 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
+      {alert && (
+        <AlertModal
+          type={alert.type}
+          title={alert.title}
+          message={alert.message}
+          onClose={() => setAlert(null)}
+        />
+      )}
 
       <main className="flex-1 bg-gray-50 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -304,7 +323,7 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="bg-white rounded-xl shadow-md p-6">
-                  <div className="text-3xl mb-2">👀</div>
+                  <Eye size={32} className="text-green-600 mb-2" />
                   <p className="text-sm text-gray-600">Profile Views</p>
                   <p className="text-3xl font-bold text-green-600">
                     {business.profileViews}
@@ -312,7 +331,7 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="bg-white rounded-xl shadow-md p-6">
-                  <div className="text-3xl mb-2">⭐</div>
+                  <Star size={32} className="text-yellow-600 mb-2" />
                   <p className="text-sm text-gray-600">Total Reviews</p>
                   <p className="text-3xl font-bold text-yellow-600">
                     {business.reviews.length}
@@ -320,7 +339,7 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="bg-white rounded-xl shadow-md p-6">
-                  <div className="text-3xl mb-2">🚨</div>
+                  <AlertTriangle size={32} className="text-red-600 mb-2" />
                   <p className="text-sm text-gray-600">Total Reports</p>
                   <p className="text-3xl font-bold text-red-600">
                     {business.reports.length}
@@ -353,9 +372,10 @@ export default function DashboardPage() {
                     <div className="flex gap-2">
                       <button
                         onClick={copyProfileLink}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                       >
-                        📋 Copy Link
+                        <Copy size={18} />
+                        Copy Link
                       </button>
                       <button
                         onClick={() => setShowEditForm(true)}

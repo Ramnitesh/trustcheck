@@ -18,6 +18,7 @@ import Footer from "@/components/Footer";
 import TrustBadge from "@/components/TrustBadge";
 import ReviewCard from "@/components/ReviewCard";
 import ReportForm from "@/components/ReportForm";
+import AlertModal, { AlertType } from "@/components/AlertModal";
 
 export default function BusinessProfilePage() {
   const params = useParams();
@@ -28,6 +29,11 @@ export default function BusinessProfilePage() {
   const [error, setError] = useState("");
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [showReportForm, setShowReportForm] = useState(false);
+  const [alert, setAlert] = useState<{
+    type: AlertType;
+    title: string;
+    message: string;
+  } | null>(null);
 
   // Review form state
   const [reviewerName, setReviewerName] = useState("");
@@ -87,7 +93,11 @@ export default function BusinessProfilePage() {
       // Refresh business data
       fetchBusiness();
     } catch (err: any) {
-      alert(err.message);
+      setAlert({
+        type: "error",
+        title: "Error",
+        message: err.message,
+      });
     } finally {
       setSubmitting(false);
     }
@@ -96,7 +106,11 @@ export default function BusinessProfilePage() {
   const copyProfileLink = () => {
     const link = `${window.location.origin}/b/${number}`;
     navigator.clipboard.writeText(link);
-    alert("Profile link copied to clipboard!");
+    setAlert({
+      type: "success",
+      title: "Success",
+      message: "Profile link copied to clipboard!",
+    });
   };
 
   if (loading) {
@@ -143,6 +157,14 @@ export default function BusinessProfilePage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
+      {alert && (
+        <AlertModal
+          type={alert.type}
+          title={alert.title}
+          message={alert.message}
+          onClose={() => setAlert(null)}
+        />
+      )}
 
       <main className="flex-1 bg-gray-50 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -204,9 +226,12 @@ export default function BusinessProfilePage() {
             <div className="lg:col-span-2 space-y-6">
               <div className="bg-white rounded-xl shadow-md p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    ⭐ Reviews ({business.reviews.length})
-                  </h2>
+                  <div className="flex items-center gap-2">
+                    <Star size={24} className="text-yellow-500" />
+                    <h2 className="text-2xl font-bold text-gray-900">
+                      Reviews ({business.reviews.length})
+                    </h2>
+                  </div>
                   <button
                     onClick={() => setShowReviewForm(!showReviewForm)}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"

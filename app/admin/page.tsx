@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AlertModal, { AlertType } from "@/components/AlertModal";
+import ConfirmModal from "@/components/ConfirmModal";
+import { Eye, Star, AlertTriangle } from "lucide-react";
 
 export default function AdminPage() {
   const router = useRouter();
@@ -15,6 +18,18 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<"businesses" | "reports">(
     "businesses",
   );
+  const [alert, setAlert] = useState<{
+    type: "success" | "error" | "warning" | "info";
+    title: string;
+    message: string;
+  } | null>(null);
+  const [confirmModal, setConfirmModal] = useState<{
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    isDangerous?: boolean;
+    confirmText?: string;
+  } | null>(null);
 
   useEffect(() => {
     checkAuth();
@@ -81,32 +96,41 @@ export default function AdminPage() {
         await fetchBusinesses();
       }
     } catch (err) {
-      alert("Failed to update verification status");
+      setAlert({
+        type: "error",
+        title: "Error",
+        message: "Failed to update verification status",
+      });
     }
   };
 
   const handleBan = async (businessId: string, isBanned: boolean) => {
-    if (
-      !confirm(
-        `Are you sure you want to ${isBanned ? "unban" : "ban"} this business?`,
-      )
-    ) {
-      return;
-    }
+    setConfirmModal({
+      title: `${isBanned ? "Unban" : "Ban"} Business`,
+      message: `Are you sure you want to ${isBanned ? "unban" : "ban"} this business?`,
+      isDangerous: true,
+      confirmText: isBanned ? "Unban" : "Ban",
+      onConfirm: async () => {
+        try {
+          const response = await fetch("/api/admin/business/ban", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ businessId, isBanned: !isBanned }),
+          });
 
-    try {
-      const response = await fetch("/api/admin/business/ban", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ businessId, isBanned: !isBanned }),
-      });
-
-      if (response.ok) {
-        await fetchBusinesses();
-      }
-    } catch (err) {
-      alert("Failed to update ban status");
-    }
+          if (response.ok) {
+            await fetchBusinesses();
+          }
+        } catch (err) {
+          setAlert({
+            type: "error",
+            title: "Error",
+            message: "Failed to update ban status",
+          });
+        }
+        setConfirmModal(null);
+      },
+    });
   };
 
   const handleCloseReport = async (reportId: string) => {
@@ -121,7 +145,11 @@ export default function AdminPage() {
         await fetchReports();
       }
     } catch (err) {
-      alert("Failed to close report");
+      setAlert({
+        type: "error",
+        title: "Error",
+        message: "Failed to close report",
+      });
     }
   };
 
@@ -140,6 +168,24 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
+      {alert && (
+        <AlertModal
+          type={alert.type}
+          title={alert.title}
+          message={alert.message}
+          onClose={() => setAlert(null)}
+        />
+      )}
+      {confirmModal && (
+        <ConfirmModal
+          title={confirmModal.title}
+          message={confirmModal.message}
+          onConfirm={confirmModal.onConfirm}
+          onCancel={() => setConfirmModal(null)}
+          isDangerous={confirmModal.isDangerous}
+          confirmText={confirmModal.confirmText}
+        />
+      )}
 
       <main className="flex-1 bg-gray-50 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -291,10 +337,28 @@ export default function AdminPage() {
                           </span>
                         </td>
                         <td className="py-4 px-4">
-                          <div className="text-sm text-center">
-                            <p>👀 {business.profileViews}</p>
-                            <p>⭐ {business._count.reviews}</p>
-                            <p>🚨 {business._count.reports}</p>
+                          <div className="text-sm text-center space-y-2">
+                            <div className="flex items-center justify-center gap-1">
+                              <Eye className="text-blue-600" size={16} />
+                              <p className="text-gray-500">
+                                {business.profileViews}
+                              </p>
+                            </div>
+                            <div className="flex items-center justify-center gap-1">
+                              <Star size={16} className="text-yellow-500" />
+                              <p className="text-gray-500">
+                                {business._count.reviews}
+                              </p>
+                            </div>
+                            <div className="flex items-center justify-center gap-1">
+                              <AlertTriangle
+                                size={16}
+                                className="text-red-600"
+                              />
+                              <p className="text-gray-500">
+                                {business._count.reports}
+                              </p>
+                            </div>
                           </div>
                         </td>
                         <td className="py-4 px-4">
