@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 import { removeAuthCookie } from "@/lib/auth";
 
 export async function POST() {
